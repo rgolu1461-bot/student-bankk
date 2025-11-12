@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student Bank Management</title>
+  <style>
+    body {
+      font-family: "Poppins", sans-serif;
+      background: #f5f7fa;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      background: #fff;
+      width: 400px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+
+    input,
+    button,
+    select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 1em;
+    }
+
+    button {
+      background: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: #0056b3;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .balance {
+      font-size: 1.2em;
+      color: #2c3e50;
+      text-align: center;
+      margin: 15px 0;
+    }
+
+    .transactions {
+      background: #f0f0f0;
+      padding: 10px;
+      border-radius: 5px;
+      max-height: 150px;
+      overflow-y: auto;
+      font-size: 0.9em;
+    }
+
+    .transactions p {
+      margin: 5px 0;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 5px;
+    }
+
+    .logout-btn {
+      background: #dc3545;
+    }
+
+    .logout-btn:hover {
+      background: #a71d2a;
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="login-container">
+    <h1>Student Bank</h1>
+    <input type="text" id="studentId" placeholder="Enter Student ID" />
+    <button onclick="login()">Login</button>
+  </div>
+
+  <div class="container hidden" id="bank-container">
+    <h1>Welcome, <span id="displayId"></span></h1>
+    <div class="balance">
+      Available Balance: ₹<span id="balance">0</span>
+    </div>
+
+    <input type="number" id="cashAmount" placeholder="Enter amount" />
+    <button onclick="cashIn()">Cash In</button>
+    <button onclick="cashOut()">Cash Out</button>
+
+    <h3>Add Reward</h3>
+    <select id="rewardType">
+      <option value="marks">Marks Reward</option>
+      <option value="event">Event Participation</option>
+    </select>
+    <input type="number" id="rewardAmount" placeholder="Enter reward amount" />
+    <button onclick="addReward()">Add Reward</button>
+
+    <h3>Transaction History</h3>
+    <div class="transactions" id="transactionHistory">
+      <p>No transactions yet.</p>
+    </div>
+
+    <button class="logout-btn" onclick="logout()">Logout</button>
+  </div>
+
+  <script>
+    let currentStudentId = "";
+    let balance = 0;
+    let transactionHistory = [];
+
+    // Load student data from localStorage
+    function loadStudentData(id) {
+      const savedData = localStorage.getItem("studentBank_" + id);
+      if (savedData) {
+        const data = JSON.parse(savedData);
+        balance = data.balance;
+        transactionHistory = data.history;
+      } else {
+        balance = 0;
+        transactionHistory = [];
+      }
+    }
+
+    // Save student data to localStorage
+    function saveStudentData() {
+      const data = { balance, history: transactionHistory };
+      localStorage.setItem("studentBank_" + currentStudentId, JSON.stringify(data));
+    }
+
+    // Update UI
+    function updateBalance() {
+      document.getElementById("balance").innerText = balance.toFixed(2);
+      saveStudentData();
+    }
+
+    function updateHistory() {
+      const historyDiv = document.getElementById("transactionHistory");
+      if (transactionHistory.length === 0) {
+        historyDiv.innerHTML = "<p>No transactions yet.</p>";
+      } else {
+        historyDiv.innerHTML = transactionHistory.map((t) => <p>${t}</p>).join("");
+      }
+    }
+
+    function login() {
+      const id = document.getElementById("studentId").value.trim();
+      if (id === "") {
+        alert("Please enter your Student ID");
+        return;
+      }
+      currentStudentId = id;
+      loadStudentData(id);
+      document.getElementById("displayId").innerText = currentStudentId;
+      document.getElementById("login-container").classList.add("hidden");
+      document.getElementById("bank-container").classList.remove("hidden");
+      updateBalance();
+      updateHistory();
+    }
+
+    function cashIn() {
+      const amount = parseFloat(document.getElementById("cashAmount").value);
+      if (isNaN(amount) || amount <= 0) {
+        alert("Enter a valid amount");
+        return;
+      }
+      balance += amount;
+      transactionHistory.push(+ ₹${amount.toFixed(2)} (Cash In));
+      updateBalance();
+      updateHistory();
+      document.getElementById("cashAmount").value = "";
+    }
+
+    function cashOut() {
+      const amount = parseFloat(document.getElementById("cashAmount").value);
+      if (isNaN(amount) || amount <= 0) {
+        alert("Enter a valid amount");
+        return;
+      }
+      if (amount > balance) {
+        alert("Insufficient balance!");
+        return;
+      }
+      balance -= amount;
+      transactionHistory.push(- ₹${amount.toFixed(2)} (Cash Out));
+      updateBalance();
+      updateHistory();
+      document.getElementById("cashAmount").value = "";
+    }
+
+    function addReward() {
+      const type = document.getElementById("rewardType").value;
+      const amount = parseFloat(document.getElementById("rewardAmount").value);
+      if (isNaN(amount) || amount <= 0) {
+        alert("Enter a valid reward amount");
+        return;
+      }
+      balance += amount;
+      const label = type === "marks" ? "Marks Reward" : "Event Reward";
+      transactionHistory.push(+ ₹${amount.toFixed(2)} (${label}));
+      updateBalance();
+      updateHistory();
+      document.getElementById("rewardAmount").value = "";
+    }
+
+    function logout() {
+      saveStudentData();
+      currentStudentId = "";
+      document.getElementById("login-container").classList.remove("hidden");
+      document.getElementById("bank-container").classList.add("hidden");
+      document.getElementById("studentId").value = "";
+    }
+  </script>
+</body>
+</html>
