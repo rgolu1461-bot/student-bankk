@@ -1,0 +1,108 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+/* Initial Login Page */
+.login-container {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: url("background.jpg") center/cover no-repeat; 
+}
+
+.login-box {
+  background: rgba(255, 255, 255, 0.9);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  width: 300px;
+  text-align: center;
+}
+
+.login-box input {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+.btn {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  background: #007bff;
+  color: white;
+  font-size: 16px;
+}
+
+.btn:hover {
+  background: #0056b3;
+}
+
+/* Main Dashboard */
+#app {
+  display: none;
+  padding: 20px;
+}
+
+.header {
+  background: #222;
+  padding: 15px;
+  color: white;
+  text-align: center;
+  font-size: 24px;
+  border-radius: 5px;
+}
+
+.menu {
+  margin-top: 20px;
+  display: flex;
+  gap: 15px;
+}
+
+.menu button {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  background: #28a745;
+  color: white;
+  font-size: 16px;
+}
+
+.menu button:hover {
+  background: #1e7e34;
+}
+
+/* Upload Box */
+.upload-box {
+  margin-top: 20px;
+  padding: 20px;
+  border: 2px dashed #999;
+  border-radius: 10px;
+  text-align: center;
+  background: #f8f9fa;
+}
+
+.upload-box input {
+  margin-top: 10px;
+  font-size: 16px;
+}
+
+/* Hidden Sections */
+.section {
+  display: none;
+  margin-top: 20px;
+}
+
+/* Certificate Preview */
+#preview {
+  margin-top: 10px;
+  max-width: 300px;
+  border-radius: 5px;
+}
